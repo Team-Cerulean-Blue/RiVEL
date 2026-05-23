@@ -1,2 +1,1 @@
-# RiVEL
-A RISC-V emulator in Lua, primarily centered on OpenComputers.
+# RiVEL - RISC-V Emulator for Lua
