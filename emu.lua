@@ -3,8 +3,8 @@ local u32limit = 4294967296 -- Intentionally lacks a -1
 local maxMem = 1024 -- in bytes
 
 
-local memData = ""
-for i = 1, maxMem do
+local memData = "\x00\xA0\x05\x13"
+for i = #memData + 1, maxMem do
   memData = memData .. "\0"
 end
 -- Use string.char() to convert numbers to memory string bytes
