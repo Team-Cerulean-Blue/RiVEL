@@ -3,7 +3,7 @@ local u32limit = 4294967296 -- Intentionally lacks a -1
 local maxMem = 1024 -- in bytes
 
 
-local memData = "\x00\xA0\x05\x13"
+local memData = "\x00\x90\x00\x93\x00\xa0\x80\x93"
 for i = #memData + 1, maxMem do
   memData = memData .. "\0"
 end
@@ -15,7 +15,9 @@ local registers = {}
 setmetatable(registers, {["__index"] = function(_, key)
   local reg = {}
   function reg.set(value)
-    regData[key] = value % u32limit
+    if key > 0 and key <= 32 then
+      regData[key] = value % u32limit
+    end
   end
 
   function reg.get()
@@ -34,12 +36,40 @@ while true do
   local instruction = string.unpack(">I4", memData:sub(pc + 1, pc + 4))
   print("Instruction: " .. tostring(instruction))
   local opcode = bit32.extract(instruction, 0, 7)
-  print("Opcode: " .. tostring(opcode))
+  print("opcode: " .. tostring(opcode))
   if opcode == 51 then
     -- R format
   elseif opcode == 19 then
     -- I format
+    local funct3 = bit32.extract(instruction, 12, 3)
+    print("funct3: " .. tostring(funct3))
+    local imm = bit32.extract(instruction, 20, 12)
+    print("imm: " .. tostring(imm))
+    local rs1 = bit32.extract(instruction, 15, 5)
+    print("rs1: " .. tostring(rs1))
+    local rd = bit32.extract(instruction, 7, 5)
+    print("rd: " .. tostring(rd))
+    if funct3 == 0 then
+      print("addi")
+      registers[rd].set(registers[rs1].get() + imm)
+    elseif funct3 == 4 then
 
+    elseif funct3 == 6 then
+
+    elseif funct3 == 7 then
+
+    elseif funct3 == 1 then
+
+    elseif funct3 == 5 then
+
+    elseif funct3 == 2 then
+
+    elseif funct3 == 3 then
+
+    else
+      print("Unrecognized funct3!")
+      break
+    end
   elseif opcode == 3 then
     -- I format
   elseif opcode == 35 then
@@ -63,3 +93,5 @@ while true do
   pc = pc + 4
 end
 print("Halted.")
+print("Final register status:")
+print(table.unpack(regData))
