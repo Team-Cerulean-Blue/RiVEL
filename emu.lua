@@ -1,5 +1,15 @@
 local u32limit = 4294967296 -- Intentionally lacks a -1
 
+local maxMem = 1024 -- in bytes
+
+
+local memData = ""
+for i = 1, maxMem do
+  memData = memData .. "\0"
+end
+-- Use string.char() to convert numbers to memory string bytes
+-- Use string.byte() to do the opposite
+
 local regData = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} -- Data for register 0 is intentionally not in here because it is always 0
 local registers = {}
 setmetatable(registers, {["__index"] = function(_, key)
