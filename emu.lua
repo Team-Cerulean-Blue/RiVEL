@@ -36,23 +36,26 @@ while true do
   local opcode = bit32.extract(instruction, 0, 7)
   print("Opcode: " .. tostring(opcode))
   if opcode == 51 then
-
+    -- R format
   elseif opcode == 19 then
+    -- I format
 
   elseif opcode == 3 then
-
+    -- I format
   elseif opcode == 35 then
-
+    -- S format
   elseif opcode == 99 then
-
+    -- B format
   elseif opcode == 111 then
-
+    -- J format
+  elseif opcode == 103 then
+    -- I format
   elseif opcode == 55 then
-
+    -- U format
   elseif opcode == 23 then
-
+    -- U format
   elseif opcode == 115 then
-
+    -- I format
   else
     print("Unrecognized opcode!")
     break
