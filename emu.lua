@@ -3,7 +3,7 @@ local u32limit = 4294967296 -- Intentionally lacks a -1
 local maxMem = 1024 -- in bytes
 
 
-local memData = "\x00\x90\x00\x93\x00\xa0\x80\x93"
+local memData = io.open("sample.bin", "rb"):read("*a") or ""
 for i = #memData + 1, maxMem do
   memData = memData .. "\0"
 end
@@ -33,7 +33,7 @@ end})
 -- Main loop
 local pc = 0
 while true do
-  local instruction = string.unpack(">I4", memData:sub(pc + 1, pc + 4))
+  local instruction = string.unpack("<I4", memData:sub(pc + 1, pc + 4))
   print("Instruction: " .. tostring(instruction))
   local opcode = bit32.extract(instruction, 0, 7)
   print("opcode: " .. tostring(opcode))
@@ -53,15 +53,33 @@ while true do
       print("addi")
       registers[rd].set(registers[rs1].get() + imm)
     elseif funct3 == 4 then
-
+      print("xori")
+      registers[rd].set(registers[rs1].get() ~ imm)
     elseif funct3 == 6 then
-
+      print("ori")
+      registers[rd].set(registers[rs1].get() | imm)
     elseif funct3 == 7 then
-
+      print("andi")
+      registers[rd].set(registers[rs1].get() & imm)
     elseif funct3 == 1 then
-
+      if bit32.extract(imm, 5, 6) == 0 then -- I don't know why this is needed
+        print("slli")
+        registers[rd].set(bit32.lshift(registers[rs1].get(), bit32.extract(imm, 0, 4)))
+      else
+        print("Invalid immediate bits!")
+        break
+      end
     elseif funct3 == 5 then
-
+      if bit32.extract(imm, 5, 6) == 0 then
+        print("srli")
+        registers[rd].set(bit32.rshift(registers[rs1].get(), bit32.extract(imm, 0, 4)))
+      elseif bit32.extract(imm, 5, 6) == 32 then
+        print("srai")
+        registers[rd].set(bit32.arshift(registers[rs1].get(), bit32.extract(imm, 0, 4)))
+      else
+        print("Invalid immediate bits!")
+        break
+      end
     elseif funct3 == 2 then
 
     elseif funct3 == 3 then
