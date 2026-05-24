@@ -28,11 +28,35 @@ setmetatable(registers, {["__index"] = function(_, key)
   return reg
 end})
 
-registers[10].set(20)
-print(registers[10].get())
-registers[0].set(20)
-print(registers[0].get())
-registers[31].set(4294967297)
-print(registers[31].get())
-registers[30].set(-4294967295)
-print(registers[30].get())
+-- Main loop
+local pc = 0
+while true do
+  local instruction = string.unpack(">I4", memData:sub(pc + 1, pc + 4))
+  print("Instruction: " .. tostring(instruction))
+  local opcode = bit32.extract(instruction, 0, 7)
+  print("Opcode: " .. tostring(opcode))
+  if opcode == 51 then
+
+  elseif opcode == 19 then
+
+  elseif opcode == 3 then
+
+  elseif opcode == 35 then
+
+  elseif opcode == 99 then
+
+  elseif opcode == 111 then
+
+  elseif opcode == 55 then
+
+  elseif opcode == 23 then
+
+  elseif opcode == 115 then
+
+  else
+    print("Unrecognized opcode!")
+    break
+  end
+  pc = pc + 4
+end
+print("Halted.")
