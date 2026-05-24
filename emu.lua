@@ -46,6 +46,9 @@ while true do
     local imm = bit32.extract(instruction, 20, 12)
     print("imm: " .. tostring(imm))
     local rs1 = bit32.extract(instruction, 15, 5)
+    if bit32.extract(imm, 11) == 1 then
+      imm = imm - 4096 -- Make it underflow for signed (negative) numbers to retain the sign
+    end
     print("rs1: " .. tostring(rs1))
     local rd = bit32.extract(instruction, 7, 5)
     print("rd: " .. tostring(rd))
@@ -62,7 +65,7 @@ while true do
       print("andi")
       registers[rd].set(registers[rs1].get() & imm)
     elseif funct3 == 1 then
-      if bit32.extract(imm, 5, 6) == 0 then -- I don't know why this is needed
+      if bit32.extract(imm, 5, 6) == 0 then -- I don't know why this is in the RISC-V spec but sure
         print("slli")
         registers[rd].set(bit32.lshift(registers[rs1].get(), bit32.extract(imm, 0, 4)))
       else
@@ -81,9 +84,34 @@ while true do
         break
       end
     elseif funct3 == 2 then
-
+      local rs1signed
+      if rs1 >= 0x80000000 then
+        rs1signed = registers[rs1].get() - 0x100000000
+      else
+        rs1signed = registers[rs1].get()
+      end
+      local immSigned
+      if imm >= 0x80000000 then
+        immSigned = imm - 0x100000000
+      else
+        immSigned = imm
+      end
+      if registers[rs1].get() < imm then
+        registers[rd].set(1)
+      else
+        registers[rd].set(0)
+      end
+      if rs1signed < immSigned then
+        registers[rd].set(1)
+      else
+        registers[rd].set(0)
+      end
     elseif funct3 == 3 then
-
+      if registers[rs1].get() < imm then
+        registers[rd].set(1)
+      else
+        registers[rd].set(0)
+      end
     else
       print("Unrecognized funct3!")
       break
