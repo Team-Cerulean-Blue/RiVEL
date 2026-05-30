@@ -61,26 +61,41 @@ while true do
       elseif funct7 == 32 then
         print("sub")
         registers[rd].set(rs1val - rs2val)
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 4 then
       if funct7 == 0 then
         print("xor")
         registers[rd].set(bit32.bxor(rs1val, rs2val))
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 6 then
       if funct7 == 0 then
         print("or")
         registers[rd].set(rs1val | rs2val)
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 7 then
       if funct7 == 0 then
         print("and")
         registers[rd].set(rs1val & rs2val)
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 1 then
       if funct7 == 0 then
         print("sll")
         registers[rd].set(bit32.lshift(rs1val, rs2val))
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 5 then
       if funct7 == 0 then
@@ -89,6 +104,9 @@ while true do
       elseif funct7 == 32 then
         print("sra")
         registers[rd].set(bit32.arshift(rs1val, rs2val))
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 2 then
       if funct7 == 0 then
@@ -115,6 +133,9 @@ while true do
         else
           registers[rd].set(0)
         end
+      else
+        print("Unrecognized funct7!")
+        break
       end
     elseif funct3 == 3 then
       if funct7 == 0 then
@@ -123,7 +144,13 @@ while true do
         else
           registers[rd].set(0)
         end
+      else
+        print("Unrecognized funct7!")
+        break
       end
+    else
+      print("Unrecognized funct3!")
+      break
     end
   elseif opcode == 19 then
     -- I format
